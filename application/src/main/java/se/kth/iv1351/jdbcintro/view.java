@@ -102,6 +102,8 @@ public class view {
         }
 
       }
+      
+      connection.close();
 
     } catch (SQLException | ClassNotFoundException | IOException | NumberFormatException exc) {
       exc.printStackTrace();
