@@ -77,7 +77,11 @@ public class view {
             }
             break;
           case "list_available":
-            controller.listAvailable(connection);
+            if(ia.length > 1) {
+              controller.listAvailable(connection, ia[1]);
+            } else {
+              controller.listAvailable(connection);
+            }
             break;
           case "list_rentals":
             controller.listRentals(connection, currentUser);
@@ -102,7 +106,6 @@ public class view {
         }
 
       }
-      
       connection.close();
 
     } catch (SQLException | ClassNotFoundException | IOException | NumberFormatException exc) {
