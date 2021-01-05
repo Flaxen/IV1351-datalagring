@@ -1,9 +1,7 @@
 -- 1.1
-
+CREATE VIEW total_instruments_per_month AS
 SELECT * FROM
 (
-
-
   SELECT 'januari' as month, 'all instruments' as instrument, COUNT(*) FROM rented_instrument
   WHERE (lease_period_start >= '2020-01-01' AND lease_period_start < '2020-02-01')
   OR (lease_period_end >= '2020-01-01' AND lease_period_end < '2020-02-01')
@@ -88,14 +86,9 @@ SELECT * FROM
 )as foo
 
 UNION ALL
-
 -- del två av 1.1
-
 SELECT * FROM
-
 (
-
-
   SELECT 'januari' as month, s.instrument,
   COUNT (s.instrument) AS count
   FROM rented_instrument AS r INNER JOIN instrument_stock as s
@@ -229,238 +222,15 @@ SELECT * FROM
 
 )as foo2
 
+-- actually get query 1.1
+SELECT * FROM total_instruments_per_month;
+
 -- 1.2
--- del 1
 
-SELECT 'all instruments' AS instrument, AVG(count) AS average FROM (
+select instrument, sum(i.count)/12 as average
+from total_instruments_per_month as i
+GROUP BY(i.instrument)
 
-
-  SELECT COUNT(*) FROM rented_instrument
-  WHERE (lease_period_start >= '2020-01-01' AND lease_period_start < '2020-02-01')
-  OR (lease_period_end >= '2020-01-01' AND lease_period_end < '2020-02-01')
-  OR (lease_period_start < '2020-01-01' AND lease_period_end >= '2020-02-01')
-  UNION ALL
-  SELECT COUNT(*) FROM rented_instrument
-  WHERE (lease_period_start >= '2020-02-01' AND lease_period_start < '2020-03-01')
-  OR (lease_period_end >= '2020-02-01' AND lease_period_end < '2020-03-01')
-  OR (lease_period_start < '2020-02-01' AND lease_period_end >= '2020-03-01')
-
-  UNION ALL
-
-  SELECT COUNT(*) FROM rented_instrument
-  WHERE (lease_period_start >= '2020-03-01' AND lease_period_start < '2020-04-01')
-  OR (lease_period_end >= '2020-03-01' AND lease_period_end < '2020-04-01')
-  OR (lease_period_start < '2020-03-01' AND lease_period_end >= '2020-04-01')
-
-  UNION ALL
-
-  SELECT COUNT(*) FROM rented_instrument
-  WHERE (lease_period_start >= '2020-04-01' AND lease_period_start < '2020-05-01')
-  OR (lease_period_end >= '2020-04-01' AND lease_period_end < '2020-05-01')
-  OR (lease_period_start < '2020-04-01' AND lease_period_end >= '2020-05-01')
-
-  UNION ALL
-
-  SELECT COUNT(*) FROM rented_instrument
-  WHERE (lease_period_start >= '2020-05-01' AND lease_period_start < '2020-06-01')
-  OR (lease_period_end >= '2020-05-01' AND lease_period_end < '2020-06-01')
-  OR (lease_period_start < '2020-05-01' AND lease_period_end >= '2020-06-01')
-
-  UNION ALL
-
-  SELECT COUNT(*) FROM rented_instrument
-  WHERE (lease_period_start >= '2020-06-01' AND lease_period_start < '2020-07-01')
-  OR (lease_period_end >= '2020-06-01' AND lease_period_end < '2020-07-01')
-  OR (lease_period_start < '2020-06-01' AND lease_period_end >= '2020-07-01')
-
-  UNION ALL
-
-  SELECT COUNT(*) FROM rented_instrument
-  WHERE (lease_period_start >= '2020-07-01' AND lease_period_start < '2020-08-01')
-  OR (lease_period_end >= '2020-07-01' AND lease_period_end < '2020-08-01')
-  OR (lease_period_start < '2020-07-01' AND lease_period_end >= '2020-08-01')
-
-  UNION ALL
-
-  SELECT COUNT(*) FROM rented_instrument
-  WHERE (lease_period_start >= '2020-08-01' AND lease_period_start < '2020-09-01')
-  OR (lease_period_end >= '2020-08-01' AND lease_period_end < '2020-09-01')
-  OR (lease_period_start < '2020-08-01' AND lease_period_end >= '2020-09-01')
-
-  UNION ALL
-
-  SELECT COUNT(*) FROM rented_instrument
-  WHERE (lease_period_start >= '2020-09-01' AND lease_period_start < '2020-10-01')
-  OR (lease_period_end >= '2020-09-01' AND lease_period_end < '2020-10-01')
-  OR (lease_period_start < '2020-09-01' AND lease_period_end >= '2020-10-01')
-
-  UNION ALL
-
-  SELECT COUNT(*) FROM rented_instrument
-  WHERE (lease_period_start >= '2020-10-01' AND lease_period_start < '2020-11-01')
-  OR (lease_period_end >= '2020-10-01' AND lease_period_end < '2020-11-01')
-  OR (lease_period_start < '2020-10-01' AND lease_period_end >= '2020-11-01')
-
-  UNION ALL
-
-  SELECT COUNT(*) FROM rented_instrument
-  WHERE (lease_period_start >= '2020-11-01' AND lease_period_start < '2020-12-01')
-  OR (lease_period_end >= '2020-11-01' AND lease_period_end < '2020-12-01')
-  OR (lease_period_start < '2020-11-01' AND lease_period_end >= '2020-12-01')
-
-  UNION ALL
-
-  SELECT COUNT(*) FROM rented_instrument
-  WHERE (lease_period_start >= '2020-12-01' AND lease_period_start < '2021-01-01')
-  OR (lease_period_end >= '2020-12-01' AND lease_period_end < '2021-01-01')
-  OR (lease_period_start < '2020-12-01' AND lease_period_end >= '2021-01-01')
-
-) as foo
-
-UNION ALL
--- del 2
-SELECT * FROM
-(
-
-
-  SELECT foo2.instrument, cast(SUM(foo2.count) as decimal)/12 AS average FROM
-  (
-
-  SELECT s.instrument,
-  COUNT (s.instrument) AS count
-  FROM rented_instrument AS r INNER JOIN instrument_stock as s
-  ON r.instrument_stock_id = s.id
-  WHERE (lease_period_start >= '2020-01-01' AND lease_period_start < '2020-02-01')
-  OR (lease_period_end >= '2020-01-01' AND lease_period_end < '2020-02-01')
-  OR (lease_period_start < '2020-01-01' AND lease_period_end >= '2020-02-01')
-  GROUP BY(s.instrument)
-
-  UNION ALL
-
-  SELECT s.instrument,
-  COUNT (s.instrument) AS count
-  FROM rented_instrument AS r INNER JOIN instrument_stock as s
-  ON r.instrument_stock_id = s.id
-  WHERE (lease_period_start >= '2020-02-01' AND lease_period_start < '2020-03-01')
-  OR (lease_period_end >= '2020-02-01' AND lease_period_end < '2020-03-01')
-  OR (lease_period_start < '2020-02-01' AND lease_period_end >= '2020-03-01')
-  GROUP BY(s.instrument)
-
-  UNION ALL
-
-  SELECT s.instrument,
-  COUNT (s.instrument) AS count
-  FROM rented_instrument AS r INNER JOIN instrument_stock as s
-  ON r.instrument_stock_id = s.id
-  WHERE (lease_period_start >= '2020-03-01' AND lease_period_start < '2020-04-01')
-  OR (lease_period_end >= '2020-03-01' AND lease_period_end < '2020-04-01')
-  OR (lease_period_start < '2020-03-01' AND lease_period_end >= '2020-04-01')
-  GROUP BY(s.instrument)
-
-  UNION ALL
-
-  SELECT s.instrument,
-  COUNT (s.instrument) AS count
-  FROM rented_instrument AS r INNER JOIN instrument_stock as s
-  ON r.instrument_stock_id = s.id
-  WHERE (lease_period_start >= '2020-04-01' AND lease_period_start < '2020-05-01')
-  OR (lease_period_end >= '2020-04-01' AND lease_period_end < '2020-05-01')
-  OR (lease_period_start < '2020-04-01' AND lease_period_end >= '2020-05-01')
-  GROUP BY(s.instrument)
-
-  UNION ALL
-
-  SELECT s.instrument,
-  COUNT (s.instrument) AS count
-  FROM rented_instrument AS r INNER JOIN instrument_stock as s
-  ON r.instrument_stock_id = s.id
-  WHERE (lease_period_start >= '2020-05-01' AND lease_period_start < '2020-06-01')
-  OR (lease_period_end >= '2020-05-01' AND lease_period_end < '2020-06-01')
-  OR (lease_period_start < '2020-05-01' AND lease_period_end >= '2020-06-01')
-  GROUP BY(s.instrument)
-
-  UNION ALL
-
-  SELECT s.instrument,
-  COUNT (s.instrument) AS count
-  FROM rented_instrument AS r INNER JOIN instrument_stock as s
-  ON r.instrument_stock_id = s.id
-  WHERE (lease_period_start >= '2020-06-01' AND lease_period_start < '2020-07-01')
-  OR (lease_period_end >= '2020-06-01' AND lease_period_end < '2020-07-01')
-  OR (lease_period_start < '2020-06-01' AND lease_period_end >= '2020-07-01')
-  GROUP BY(s.instrument)
-
-  UNION ALL
-
-  SELECT s.instrument,
-  COUNT (s.instrument) AS count
-  FROM rented_instrument AS r INNER JOIN instrument_stock as s
-  ON r.instrument_stock_id = s.id
-  WHERE (lease_period_start >= '2020-07-01' AND lease_period_start < '2020-08-01')
-  OR (lease_period_end >= '2020-07-01' AND lease_period_end < '2020-08-01')
-  OR (lease_period_start < '2020-07-01' AND lease_period_end >= '2020-08-01')
-  GROUP BY(s.instrument)
-
-  UNION ALL
-
-  SELECT s.instrument,
-  COUNT (s.instrument) AS count
-  FROM rented_instrument AS r INNER JOIN instrument_stock as s
-  ON r.instrument_stock_id = s.id
-  WHERE (lease_period_start >= '2020-08-01' AND lease_period_start < '2020-09-01')
-  OR (lease_period_end >= '2020-08-01' AND lease_period_end < '2020-09-01')
-  OR (lease_period_start < '2020-08-01' AND lease_period_end >= '2020-09-01')
-  GROUP BY(s.instrument)
-
-  UNION ALL
-
-  SELECT s.instrument,
-  COUNT (s.instrument) AS count
-  FROM rented_instrument AS r INNER JOIN instrument_stock as s
-  ON r.instrument_stock_id = s.id
-  WHERE (lease_period_start >= '2020-09-01' AND lease_period_start < '2020-10-01')
-  OR (lease_period_end >= '2020-09-01' AND lease_period_end < '2020-10-01')
-  OR (lease_period_start < '2020-09-01' AND lease_period_end >= '2020-10-01')
-  GROUP BY(s.instrument)
-
-  UNION ALL
-
-  SELECT s.instrument,
-  COUNT (s.instrument) AS count
-  FROM rented_instrument AS r INNER JOIN instrument_stock as s
-  ON r.instrument_stock_id = s.id
-  WHERE (lease_period_start >= '2020-10-01' AND lease_period_start < '2020-11-01')
-  OR (lease_period_end >= '2020-10-01' AND lease_period_end < '2020-11-01')
-  OR (lease_period_start < '2020-10-01' AND lease_period_end >= '2020-11-01')
-  GROUP BY(s.instrument)
-
-  UNION ALL
-
-  SELECT s.instrument,
-  COUNT (s.instrument) AS count
-  FROM rented_instrument AS r INNER JOIN instrument_stock as s
-  ON r.instrument_stock_id = s.id
-  WHERE (lease_period_start >= '2020-11-01' AND lease_period_start < '2020-12-01')
-  OR (lease_period_end >= '2020-11-01' AND lease_period_end < '2020-12-01')
-  OR (lease_period_start < '2020-11-01' AND lease_period_end >= '2020-12-01')
-  GROUP BY(s.instrument)
-
-  UNION ALL
-
-  SELECT s.instrument,
-  COUNT (s.instrument) AS count
-  FROM rented_instrument AS r INNER JOIN instrument_stock as s
-  ON r.instrument_stock_id = s.id
-  WHERE (lease_period_start >= '2020-12-01' AND lease_period_start < '2021-01-01')
-  OR (lease_period_end >= '2020-12-01' AND lease_period_end < '2021-01-01')
-  OR (lease_period_start < '2020-12-01' AND lease_period_end >= '2021-01-01')
-  GROUP BY(s.instrument)
-
-  ) as foo2
-  GROUP BY(foo2.instrument)
-
-
-)as foo3
 -- 1.3
 -- del 1
 SELECT * FROM
@@ -1265,11 +1035,3 @@ ORDER BY price ASC
 GROUP BY(foo.id, foo.type, foo.instrument, foo.price, foo.available, foo.rented)
 ORDER BY price ASC
 
-
-
-
-
-
-
-
---
