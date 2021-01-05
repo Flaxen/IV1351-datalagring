@@ -50,6 +50,9 @@ public class Controller {
 
   }
 
+  public void listAvailable(Connection connection, String instrument) {
+    db.listStock(connection, instrument);
+  }
   public void listAvailable(Connection connection) {
     db.listStock(connection);
   }
