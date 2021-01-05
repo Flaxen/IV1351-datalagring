@@ -203,6 +203,30 @@ public class SoundgoodDAO {
     return null;
   }
 
+
+  public static void listStock(Connection connection, String instrument) {
+    System.out.println("searching for " + instrument);
+    String tableName = "instrument_stock";
+    ResultSet stock = null;
+    try {
+      PreparedStatement stmt = connection.prepareStatement("SELECT * from " + tableName + " WHERE " + tableName
+                             + ".current_stock > 0 AND " + tableName + ".instrument = '" + instrument + "' ORDER BY(id)");
+      stock = stmt.executeQuery();
+
+      while (stock.next()) {
+        System.out.println(
+            "ID: " + stock.getInt(1) + ", Brand: " + stock.getString(2) + ", Type: " + stock.getString(3)
+              + ", Instrument: " + stock.getString(4) + ", Price: " + stock.getFloat(5) + ", Available: " + stock.getInt(6));
+      }
+      connection.commit();
+    } catch (SQLException sqle) {
+      sqle.printStackTrace();
+      exceptionHandler(connection);
+    } finally {
+      closeResultSet(stock);
+    }
+  }
+
   public static void listStock(Connection connection) {
     String tableName = "instrument_stock";
     ResultSet stock = null;
